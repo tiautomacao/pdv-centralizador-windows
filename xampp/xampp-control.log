@@ -1,0 +1,19 @@
+13:45:24  [main] 	Initializing Control Panel
+13:45:24  [main] 	Windows Version:  Enterprise  64-bit
+13:45:24  [main] 	XAMPP Version: 8.2.12
+13:45:24  [main] 	Control Panel Version: 3.3.0  [ Compiled: Apr 6th 2021 ]
+13:45:24  [main] 	Running with Administrator rights - good!
+13:45:24  [main] 	XAMPP Installation Directory: "c:\xampp\"
+13:45:24  [main] 	Checking for prerequisites
+13:45:24  [main] 	All prerequisites found
+13:45:24  [main] 	Initializing Modules
+13:45:24  [Apache] 	XAMPP Apache Service is already running on port 80
+13:45:24  [Apache] 	XAMPP Apache Service is already running on port 443
+13:45:24  [mysql] 	XAMPP MySQL Service is already running on port 3306
+13:45:24  [main] 	The FileZilla module is disabled
+13:45:24  [main] 	The Mercury module is disabled
+13:45:24  [main] 	Starting Check-Timer
+13:45:24  [main] 	Control Panel Ready
+13:52:31  [main] 	Deinitializing Modules
+13:52:31  [main] 	Deinitializing Control Panel
+

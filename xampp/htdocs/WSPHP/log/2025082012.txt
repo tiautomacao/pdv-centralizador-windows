@@ -1,0 +1,246 @@
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:04:52 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:04:57 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:04:58 
+QUERY:select * from venda_lock where vlock_celula = '80' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:04:58 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 80 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:04 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:07 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:07 
+QUERY:select * from venda_lock where vlock_celula = '20' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:08 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 20 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:11 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:39 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:41 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:41 
+QUERY:select * from venda_lock where vlock_celula = '80' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:42 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 80 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:46 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 9 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:48 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:48 
+QUERY:select * from venda_lock where vlock_celula = '50' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:49 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 50 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:52 
+QUERY: select _id  from venda where vend_ticket_id =  50 and vend_status in ('TKTL', 'TKTA') limit 1 ; 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: GRAVAÇÃO 1 LINHA AFETADA 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:52 
+QUERY: insert into venda ( vend_empr_id, vend_loja_id, vend_term_id, vend_usua_id, vend_cli_id, vend_pre_venda_h, vend_dtmovto, vend_dtabre, vend_vl_desc, vend_vl_servico, vend_vl_troco, vend_vl_total, vend_nu_cupom, vend_status, vend_sinc, vend_modulo, vend_sequencia, vend_ticket_id, vend_nu_pessoas, vend_dtultcons, vend_vl_taxa, vend_taxa_id, vend_entregador_id, vend_pedido_id, vend_forma_pagto_model, vend_dtentrega_agendada, vend_CPF_CNPJ, vend_nome_cli ) values ( 17811 ,21341 ,-1 ,262013 ,0 ,'' ,'2025-08-20' ,'2025-08-20 12:05:50' ,0.0 ,0.0 ,0.0 ,0.0 ,0 ,'TKTA', 0 ,1 ,-1 ,50 ,1 ,'2025-08-20 12:05:50' ,0.0 ,1 ,0 ,'' ,'' ,null ,'null'  ,''  )ON DUPLICATE KEY UPDATE  vend_pre_venda_h = values (vend_pre_venda_h) , vend_dtultcons   = values (vend_dtultcons),  vend_vl_troco   = values (vend_vl_troco),  vend_vl_desc   = values (vend_vl_desc),  vend_forma_pagto_model   = values (vend_forma_pagto_model),  vend_dtentrega_agendada   = values (vend_dtentrega_agendada),  vend_cli_id   = values (vend_cli_id),  vend_nome_cli   = values (vend_nome_cli) ;set @venda_id=(SELECT LAST_INSERT_ID()); insert into venda_produto (vprod_vend_id, vprod_dtmovto, vprod_prod_id, vprod_qtde, vprod_preco, vprod_desconto, vprod_dtdesconto, vprod_total, vprod_cancelado, vprod_dtcancela, vprod_usua_cancelou, vprod_imprimiu, vprod_usua_id, vprod_modificador, vprod_atendente_id, vprod_dtlancamento, vprod_metadata, vprod_vcom_guid , vprod_vcom_description, vprod_uuid, vprod_seat_number, vprod_operations, vprod_indoor_order_ref , vprod_discount_id ) values ( @venda_id ,'2025-08-20' ,5676335 ,1.0 ,12.0 ,0.0 ,null ,12.0 ,0 ,null ,0 ,1,262013 ,'' ,262013 ,'2025-08-20 12:05:50' ,'', '', '' ,'7c7S3NYK', '1', '', '' ,-1 ); Select @venda_id as vendaid 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 1 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:52 
+QUERY:select (count(_id)) number_rows from venda_produto where vprod_uuid in ('7c7S3NYK') 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 10 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:53 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 10 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:05:55 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:56 
+QUERY:select * from venda_lock where vlock_celula = '80' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:56 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 80 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:05:59 
+QUERY: select _id  from venda where vend_ticket_id =  80 and vend_status in ('TKTL', 'TKTA') limit 1 ; 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: GRAVAÇÃO 1 LINHA AFETADA 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:00 
+QUERY: insert into venda ( vend_empr_id, vend_loja_id, vend_term_id, vend_usua_id, vend_cli_id, vend_pre_venda_h, vend_dtmovto, vend_dtabre, vend_vl_desc, vend_vl_servico, vend_vl_troco, vend_vl_total, vend_nu_cupom, vend_status, vend_sinc, vend_modulo, vend_sequencia, vend_ticket_id, vend_nu_pessoas, vend_dtultcons, vend_vl_taxa, vend_taxa_id, vend_entregador_id, vend_pedido_id, vend_forma_pagto_model, vend_dtentrega_agendada, vend_CPF_CNPJ, vend_nome_cli ) values ( 17811 ,21341 ,-1 ,262013 ,0 ,'' ,'2025-08-20' ,'2025-08-20 12:05:58' ,0.0 ,0.0 ,0.0 ,0.0 ,0 ,'TKTA', 0 ,1 ,-1 ,80 ,1 ,'2025-08-20 12:05:58' ,0.0 ,1 ,0 ,'' ,'' ,null ,'null'  ,''  )ON DUPLICATE KEY UPDATE  vend_pre_venda_h = values (vend_pre_venda_h) , vend_dtultcons   = values (vend_dtultcons),  vend_vl_troco   = values (vend_vl_troco),  vend_vl_desc   = values (vend_vl_desc),  vend_forma_pagto_model   = values (vend_forma_pagto_model),  vend_dtentrega_agendada   = values (vend_dtentrega_agendada),  vend_cli_id   = values (vend_cli_id),  vend_nome_cli   = values (vend_nome_cli) ;set @venda_id=(SELECT LAST_INSERT_ID()); insert into venda_produto (vprod_vend_id, vprod_dtmovto, vprod_prod_id, vprod_qtde, vprod_preco, vprod_desconto, vprod_dtdesconto, vprod_total, vprod_cancelado, vprod_dtcancela, vprod_usua_cancelou, vprod_imprimiu, vprod_usua_id, vprod_modificador, vprod_atendente_id, vprod_dtlancamento, vprod_metadata, vprod_vcom_guid , vprod_vcom_description, vprod_uuid, vprod_seat_number, vprod_operations, vprod_indoor_order_ref , vprod_discount_id ) values ( @venda_id ,'2025-08-20' ,5676335 ,1.0 ,12.0 ,0.0 ,null ,12.0 ,0 ,null ,0 ,1,262013 ,'' ,262013 ,'2025-08-20 12:05:58' ,'', '', '' ,'jVjRzgB7', '1', '', '' ,-1 ); Select @venda_id as vendaid 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 1 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:00 
+QUERY:select (count(_id)) number_rows from venda_produto where vprod_uuid in ('jVjRzgB7') 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:00 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:02 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:06:02 
+QUERY:select * from venda_lock where vlock_celula = '45' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 3 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:03 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 45 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:08 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:10 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:06:10 
+QUERY:select * from venda_lock where vlock_celula = '80' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 1 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:11 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 80 )  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:14 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')   order by vend_ticket_id LIMIT 150 
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:06:54 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:06:54 
+QUERY:select * from venda_lock where vlock_celula = '0' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA 11 LINHAS AFETADAS 
+ERRO: NENHUM 
+DATA: 20/08/2025 12:07:35 
+QUERY:select * from venda where vend_status in ('TKTL', 'TKTA', 'TKTP')  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:07:35 
+QUERY:select * from venda_lock where vlock_celula = '4' and vlock_status in ('TKTL', 'TKTR') limit 1  
+*********************************************************************************************
+ORIGEM: strqueryTransaction.php 
+RESULTADO: CONSULTA NENHUMA LINHA AFETADA 
+ERRO:  
+DATA: 20/08/2025 12:07:36 
+QUERY:select venda_produto.* from venda_produto where vprod_vend_id in (select _id from venda where vend_status in ('TKTL', 'TKTA', 'TKTP','TKTR') and vend_ticket_id = 4 )  
+*********************************************************************************************
