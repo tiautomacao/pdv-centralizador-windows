@@ -1,0 +1,53 @@
+[33mcommit b6e16494dc8aed8bbf9cd2e0ccf1f42984e826c4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Fri Sep 26 08:35:49 2025 -0300
+
+    Mudanças no nsis
+
+[33mcommit 4cff090183a659fd30b995e3c34a28aea63c8c2c[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Fri Sep 26 08:34:33 2025 -0300
+
+    Mudanças no nsis
+
+[33mcommit a70d647ea2598e6dbebfa45ac45bbb94000f5d01[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Fri Sep 26 08:14:51 2025 -0300
+
+    Mudanças no nsis
+
+[33mcommit 64863f45aeaa45a6bc82a9d10258b7d879cc4527[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Fri Sep 26 08:10:36 2025 -0300
+
+    Mudanças no nsis
+
+[33mcommit 0da091234ab84f0b814499708fdc6618992b2233[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Thu Sep 25 23:07:06 2025 -0300
+
+    Mudança na logica e interface do install.nsi
+
+[33mcommit a117abc4b64f2bbcab0487cc620f8ec6968b1807[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Thu Sep 25 22:53:26 2025 -0300
+
+    Mudança no validador para incluir o mac, e novo scrip de update de mac
+
+[33mcommit 927b4dfbc28a5602a1ed59d47ccb7ee03af128f8[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Thu Sep 25 20:51:02 2025 -0300
+
+    Arquivos do projeto ja com licença sendo validada
+
+[33mcommit 403a923179603633ce86a49502cd2cbc1e44f968[m
+Author: Yago Porto <yagosouz8@gmail.com>
+Date:   Tue Aug 19 17:02:51 2025 -0300
+
+    Update dos arquivos php
+
+[33mcommit 828fdf6477ec646e3ae5f041f66a96872cf88d47[m
+Author: tiautomacao <tiautomacao.drive@gmail.com>
+Date:   Tue Aug 19 16:38:45 2025 -0300
+
+    Initial commit
