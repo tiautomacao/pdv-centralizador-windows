@@ -25,8 +25,6 @@ Var InputCNPJ
 Var InputToken
 Var InputMAC
 Var LocalMacAddress
-Var GlobalCNPJ  ; Nova variavel para armazenar CNPJ globalmente
-Var GlobalToken  ; Nova variavel para armazenar Token globalmente
 
 ; --- Interface Grafica e Icones ---
 !define MUI_ICON "icon.ico"
@@ -107,10 +105,6 @@ Function PaginaLicencaLeave
 
   StrCmp $R0 "" erroCamposVazios
   StrCmp $R1 "" erroCamposVazios
-
-  ; Armazena CNPJ e Token em variaveis globais para uso posterior
-  StrCpy $GlobalCNPJ $R0
-  StrCpy $GlobalToken $R1
 
   DetailPrint "Verificando licenca online..."
   
@@ -194,9 +188,9 @@ ${If} $R9 == 4
     SetOutPath "$TEMP"
     File "registrar-mac.ps1"
 
-    ; Usa os valores armazenados nas variaveis globais
-    StrCpy $R0 $GlobalCNPJ
-    StrCpy $R1 $GlobalToken
+    ; Le os valores do CNPJ e Token diretamente dos campos de texto
+    ${NSD_GetText} $InputCNPJ $R0
+    ${NSD_GetText} $InputToken $R1
     
     ; Debug: Log dos parametros antes da execucao
     DetailPrint "Parameters - CNPJ: $R0, Token: $R1, MAC: $LocalMacAddress, API Key: ${SUPABASE_ANON_KEY}"
