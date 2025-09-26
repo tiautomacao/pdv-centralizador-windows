@@ -1,25 +1,43 @@
-$cnpj_cpf = $args[0]
-$token_acesso = $args[1]
-$api_key = $args[2]
+# validar.ps1 (Corrigido com a ordem correta)
 
-$url = "https://uhxambgdjkmdgoarezto.supabase.co/rest/v1/licencas?cnpj_cpf=eq.$cnpj_cpf&token_acesso=eq.$token_acesso&ativo=is.true&apikey=$api_key"
+# O bloco de parâmetros foi movido para o topo do script, como é exigido.
+param(
+    [string]$CnpjCpf,
+    [string]$TokenAcesso,
+    [string]$ApiKey,
+    [string]$LocalMacAddress
+)
+
+# A linha que força o TLS 1.2 agora vem DEPOIS dos parâmetros.
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 try {
-    $response = Invoke-WebRequest -Uri $url -Method Get
-    if ($response.StatusCode -eq 200) {
-        $content = $response.Content
-        if ($content -eq '[]') {
-            # Credenciais inválidas (API retornou array vazio)
-            exit 1
-        } else {
-            # Credenciais válidas (API retornou dados)
-            exit 0
-        }
-    } else {
-        # Erro de conexão ou servidor
-        exit 2
+    $uri = "https://uhxambgdjkmdgoarezto.supabase.co/rest/v1/licencas?select=mac_vinculado&cnpj_cpf=eq.$CnpjCpf&token_acesso=eq.$TokenAcesso&ativo=is.true"
+    
+    $headers = @{
+        "apikey" = $ApiKey
     }
-} catch {
-    # Erro de rede ou outro erro
+
+    $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
+
+    if ($null -eq $response -or $response.Count -eq 0) {
+        exit 1
+    }
+
+    $dbMacAddress = $response[0].mac_vinculado
+
+    if ([string]::IsNullOrEmpty($dbMacAddress)) {
+        exit 4
+    }
+
+    if ($dbMacAddress -eq $LocalMacAddress) {
+        exit 0
+    }
+
+    if ($dbMacAddress -ne $LocalMacAddress) {
+        exit 3
+    }
+}
+catch {
     exit 2
 }
