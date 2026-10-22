@@ -1,4 +1,4 @@
-﻿; ===================================================
+; ===================================================
 ; INSTALADOR CENTRALIZER WINDOWS + PRINT SERVER
 ; Autor: TI Automacao Comercial
 ; Versao: 2026.01.22.140
@@ -144,9 +144,27 @@ Section "Pre-requisitos (VC++)" SecPrereq
 SectionEnd
 
 Section "Sistema Principal e Servicos" SecMain
-  ; --- Arquivos XAMPP ---
-  SetOutPath "$INSTDIR"
-  File /r "xampp\*.*"
+  ; --- Parar servicos se ja existirem para destravar arquivos/DLLs ---
+  ExecWait 'net stop Apache2.4'
+  ExecWait 'net stop MySQL'
+
+  ; --- Arquivos XAMPP (Copia com protecao total do banco de dados) ---
+  ; Se ja existir instalacao com dados, NUNCA sobrescreve ibdata1 nem bases existentes!
+  ${If} ${FileExists} "$INSTDIR\mysql\data\ibdata1"
+    ; Copia todo o XAMPP exceto a pasta mysql\data
+    SetOutPath "$INSTDIR"
+    File /r /x "data" "xampp\*.*"
+    
+    ; Da pasta mysql\data, garante apenas o banco walinux se ele ainda nao existir
+    ${IfNot} ${FileExists} "$INSTDIR\mysql\data\walinux\*.*"
+      SetOutPath "$INSTDIR\mysql\data\walinux"
+      File /r "xampp\mysql\data\walinux\*.*"
+    ${EndIf}
+  ${Else}
+    ; Primeira instalacao do computador: instala tudo incluindo data
+    SetOutPath "$INSTDIR"
+    File /r "xampp\*.*"
+  ${EndIf}
   File "${SHORTCUT_ICON}"
 
   ; --- PASTA PRINT SERVER ---
