@@ -1,23 +1,15 @@
-# registrar-mac.ps1 (VERSÃO CORRIGIDA)
+# registrar-mac.ps1 (Sincronizado com LICENCA_SERVER e Coluna 'mac')
 
-# O bloco de parâmetros foi movido para o topo, como é exigido.
 param(
     [string]$CnpjCpf,
-    [string]$TokenAcesso,
     [string]$MacAddress,
     [string]$ApiKey
 )
 
-# A linha que força o TLS 1.2 agora vem DEPOIS dos parâmetros.
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 try {
-    $uri = "https://uhxambgdjkmdgoarezto.supabase.co/rest/v1/licencas?cnpj_cpf=eq.$CnpjCpf&token_acesso=eq.$TokenAcesso"
-
-    $body = @{
-        mac_vinculado = $MacAddress
-    } | ConvertTo-Json
-
+    # Headers para o Supabase REST API
     $headers = @{
         "apikey"        = $ApiKey
         "Authorization" = "Bearer $ApiKey"
@@ -25,7 +17,19 @@ try {
         "Prefer"        = "return=minimal"
     }
 
-    Invoke-RestMethod -Uri $uri -Method Patch -Headers $headers -Body $body
+    # Corpo: atualizando a coluna 'mac'
+    $body = @{
+        mac = $MacAddress
+    } | ConvertTo-Json
+
+    # 1. Tenta atualizar pelo CNPJ
+    $uriCnpj = "https://mmrwxfauovnnhnwzkqjy.supabase.co/rest/v1/LICENCA_SERVER?cnpj=eq.$CnpjCpf"
+    Invoke-RestMethod -Uri $uriCnpj -Method Patch -Headers $headers -Body $body
+
+    # 2. Tenta atualizar pelo Código da Filial (Fallback)
+    $uriFilial = "https://mmrwxfauovnnhnwzkqjy.supabase.co/rest/v1/LICENCA_SERVER?cod_filial=eq.$CnpjCpf"
+    Invoke-RestMethod -Uri $uriFilial -Method Patch -Headers $headers -Body $body
+
     exit 0
 }
 catch {

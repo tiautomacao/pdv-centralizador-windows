@@ -1,0 +1,2 @@
+﻿23:13:08 - Iniciando backup: C:\BACKUP_PDVLEGAL\backup_2025-11-11_23-13-08.sql
+23:13:13 - Backup concluído com sucesso.

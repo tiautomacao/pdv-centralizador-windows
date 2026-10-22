@@ -1,23 +1,29 @@
 ; ===================================================
-; INSTALADOR CENTRALIZER WINDOWS - VERSAO FINAL
+; INSTALADOR CENTRALIZER WINDOWS
 ; Autor: TI Automacao Comercial
-; Data: 27/08/2025
+; Data: 18/11/2025
 ; ===================================================
 
 ; --- Inclusoes e Definicoes Globais ---
 !include "MUI2.nsh"
 !include "LogicLib.nsh"
 !include "nsDialogs.nsh"
-!include "StrFunc.nsh"  ; Para manipulacao de strings (conversao do formato do MAC)
+!include "StrFunc.nsh"
 ${StrRep}
-!addplugindir "Plugins\x86-unicode" ; Aponta para a pasta dos plugins Unicode
+${StrTrimNewLines}
+!addplugindir "Plugins\x86-unicode"
 
 ; --- Informacoes do Instalador ---
 Name "Centralizer Windows"
-OutFile "Instalador_PDV_Centralizer_v3.0.exe"
+OutFile "Instalador_PDV_Centralizer_v2025.11.18.130.exe"
 InstallDir "C:\xampp"
 RequestExecutionLevel admin
 SetCompressor zlib
+
+; --- DEFINICOES PARA O ATALHO ---
+!define SHORTCUT_NAME "Painel Centralizador"
+!define SHORTCUT_URL "http://localhost/suporte"
+!define SHORTCUT_ICON "suporte.ico"
 
 ; --- Variaveis Globais para Pagina de Licenca ---
 Var DialogoLicenca
@@ -25,10 +31,12 @@ Var InputCNPJ
 Var InputToken
 Var InputMAC
 Var LocalMacAddress
+Var GlobalCNPJ
+Var GlobalToken
 
 ; --- Interface Grafica e Icones ---
-!define MUI_ICON "icon.ico"
-!define MUI_UNICON "icon.ico"
+!define MUI_ICON "suporte.ico"
+!define MUI_UNICON "suporte.ico"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "splash.bmp"
 !define MUI_HEADERIMAGE_UNBITMAP "splash.bmp"
@@ -58,6 +66,8 @@ Function PaginaLicencaShow
   nsExec::ExecToStack 'powershell -Command "Get-WmiObject Win32_NetworkAdapter | Where-Object { $_.NetEnabled -eq $true -and $_.MACAddress -ne $null } | Select-Object -First 1 | Select-Object -ExpandProperty MACAddress"'
   Pop $0  ; Codigo de retorno
   Pop $LocalMacAddress  ; MAC Address
+  
+  ${StrTrimNewLines} $LocalMacAddress $LocalMacAddress
 
   ${If} $0 != 0
     MessageBox MB_OK|MB_ICONSTOP "Erro ao obter MAC Address: Codigo $0"
@@ -102,6 +112,9 @@ FunctionEnd
 Function PaginaLicencaLeave
   ${NSD_GetText} $InputCNPJ $R0
   ${NSD_GetText} $InputToken $R1
+
+  StrCpy $GlobalCNPJ $R0 
+  StrCpy $GlobalToken $R1
 
   StrCmp $R0 "" erroCamposVazios
   StrCmp $R1 "" erroCamposVazios
@@ -171,14 +184,16 @@ Section "Sistema XAMPP" SecMain
   DetailPrint "Copiando arquivos do sistema. Isso pode levar alguns minutos..."
   SetOutPath "$INSTDIR"
   File /r "xampp\*.*"
+  File "${SHORTCUT_ICON}"
   DetailPrint "Registrando servico do Apache..."
   ExecWait '"$INSTDIR\apache\bin\httpd.exe" -k install'
   DetailPrint "Registrando servico do MySQL..."
   ExecWait '"$INSTDIR\mysql\bin\mysqld.exe" --install'
   DetailPrint "Iniciando servicos..."
-  ExecWait 'net start Apache2.4'
-  ExecWait 'net start MySQL'
+  ExecWait 'sc start Apache2.4'
+  ExecWait 'sc start MySQL'
   WriteUninstaller "$INSTDIR\uninstall.exe"
+
 
 ; --- LOGICA DE REGISTRO DO MAC ---
 ; Executa somente se a validacao retornou codigo 4 (primeiro acesso)
@@ -193,10 +208,10 @@ ${If} $R9 == 4
     ${NSD_GetText} $InputToken $R1
     
     ; Debug: Log dos parametros antes da execucao
-    DetailPrint "Parameters - CNPJ: $R0, Token: $R1, MAC: $LocalMacAddress, API Key: ${SUPABASE_ANON_KEY}"
-    
+    DetailPrint "Parameters - CNPJ: $GlobalCNPJ, Token: $GlobalToken, MAC: $LocalMacAddress, API Key: ${SUPABASE_ANON_KEY}"
+
     ; Executa o registro, capturando o codigo de retorno e saida
-    nsExec::ExecToStack 'powershell.exe -ExecutionPolicy Bypass -File "$TEMP\registrar-mac.ps1" -CnpjCpf "$R0" -TokenAcesso "$R1" -MacAddress "$LocalMacAddress" -ApiKey "${SUPABASE_ANON_KEY}"'
+    nsExec::ExecToStack 'powershell.exe -ExecutionPolicy Bypass -File "$TEMP\registrar-mac.ps1" -CnpjCpf "$GlobalCNPJ" -TokenAcesso "$GlobalToken" -MacAddress "$LocalMacAddress" -ApiKey "${SUPABASE_ANON_KEY}"'
     Pop $0  ; Codigo de retorno
     Pop $1  ; Saida (se houver)
 
@@ -215,7 +230,28 @@ ${EndIf}
 SectionEnd
 
 Section "Criar Atalho na Area de Trabalho" SecShortcut
-  CreateShortcut "$DESKTOP\Painel XAMPP.lnk" "$INSTDIR\xampp-control.exe" "" "$INSTDIR\xampp-control.exe" 0
+  ; --- Método Manual e Robusto para Criar Atalho de URL ---
+
+  ; Define o contexto do Shell para garantir que o atalho seja criado na área de trabalho do usuário atual
+  SetShellVarContext current
+
+  ; Define o caminho completo para o nosso novo atalho .url
+  Var /GLOBAL ATALHO_PATH
+  StrCpy $ATALHO_PATH "$DESKTOP\${SHORTCUT_NAME}.url"
+
+  ; Escreve o conteúdo do arquivo .url manualmente. É como um arquivo .ini.
+  WriteINIStr $ATALHO_PATH "InternetShortcut" "URL" "${SHORTCUT_URL}"
+  
+  ; Define o caminho para o ícone.
+  ; Esta linha é crucial e garante que o caminho está formatado corretamente.
+  WriteINIStr $ATALHO_PATH "InternetShortcut" "IconFile" "$INSTDIR\${SHORTCUT_ICON}"
+  
+  ; Define o índice do ícone dentro do arquivo .ico (quase sempre 0)
+  WriteINIStr $ATALHO_PATH "InternetShortcut" "IconIndex" "0"
+  
+  ; Força o Windows a atualizar o ícone na área de trabalho
+  System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
+
 SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -228,7 +264,7 @@ SectionEnd
 ; FUNCAO PARA EXECUTAR NO FINAL DA INSTALACAO
 ; ===================================================
 Function LaunchLink
-  ExecShell "open" "$INSTDIR\xampp-control.exe"
+  ExecShell "open" "$INSTDIR\monitorarBackupCentralizador.exe"
 FunctionEnd
 
 ; ===================================================
@@ -236,12 +272,21 @@ FunctionEnd
 ; ===================================================
 Section "Uninstall"
   DetailPrint "Parando e removendo servicos..."
-  ExecWait 'net stop Apache2.4'
-  ExecWait 'net stop MySQL'
+  ExecWait 'sc stop Apache2.4'
+  ExecWait 'sc stop MySQL'
   ExecWait '"$INSTDIR\apache\bin\httpd.exe" -k uninstall'
   ExecWait '"$INSTDIR\mysql\bin\mysqld.exe" --remove'
+  
   DetailPrint "Removendo arquivos..."
+  ; Remove o arquivo de ícone
+  Delete "$INSTDIR\${SHORTCUT_ICON}"
+  
+  ; Remove o restante da pasta
   RMDir /r "$INSTDIR"
+  
   DetailPrint "Removendo atalhos..."
-  Delete "$DESKTOP\Painel XAMPP.lnk"
+  ; Define o contexto do Shell para garantir que está olhando a área de trabalho correta
+  SetShellVarContext current
+  ; Remove o atalho .url
+  Delete "$DESKTOP\${SHORTCUT_NAME}.url"
 SectionEnd

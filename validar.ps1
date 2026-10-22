@@ -1,39 +1,50 @@
-# validar.ps1 (Corrigido com a ordem correta)
+# validar.ps1 (Versão Final: Tabela LICENCA_SERVER e Coluna 'mac')
 
-# O bloco de parâmetros foi movido para o topo do script, como é exigido.
 param(
     [string]$CnpjCpf,
-    [string]$TokenAcesso,
     [string]$ApiKey,
     [string]$LocalMacAddress
 )
 
-# A linha que força o TLS 1.2 agora vem DEPOIS dos parâmetros.
+# Força o uso de TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+$CnpjCpf = $CnpjCpf -replace '\.', '' -replace '/', '' -replace '-', ''
+
 try {
-    $uri = "https://uhxambgdjkmdgoarezto.supabase.co/rest/v1/licencas?select=mac_vinculado&cnpj_cpf=eq.$CnpjCpf&token_acesso=eq.$TokenAcesso&ativo=is.true"
-    
     $headers = @{
         "apikey" = $ApiKey
     }
 
+    # --- Tentativa 1: Busca por CNPJ ---
+    $uri = "https://mmrwxfauovnnhnwzkqjy.supabase.co/rest/v1/LICENCA_SERVER?select=mac&cnpj=eq.$CnpjCpf&ativo=is.true"
     $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
 
+    # --- Tentativa 2: Fallback por Código da Filial ---
+    if ($null -eq $response -or $response.Count -eq 0) {
+        $uriFilial = "https://mmrwxfauovnnhnwzkqjy.supabase.co/rest/v1/LICENCA_SERVER?select=mac&cod_filial=eq.$CnpjCpf&ativo=is.true"
+        $response = Invoke-RestMethod -Uri $uriFilial -Method Get -Headers $headers
+    }
+
+    # Validação final: se não encontrou em nenhum dos campos
     if ($null -eq $response -or $response.Count -eq 0) {
         exit 1
     }
 
-    $dbMacAddress = $response[0].mac_vinculado
+    # A coluna agora chama-se 'mac'
+    $dbMacAddress = $response[0].mac
 
+    # Se a licença existe mas não tem MAC vinculado
     if ([string]::IsNullOrEmpty($dbMacAddress)) {
         exit 4
     }
 
+    # Se o MAC coincide
     if ($dbMacAddress -eq $LocalMacAddress) {
         exit 0
     }
 
+    # Se o MAC é diferente
     if ($dbMacAddress -ne $LocalMacAddress) {
         exit 3
     }

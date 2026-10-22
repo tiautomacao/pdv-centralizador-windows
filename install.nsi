@@ -1,36 +1,41 @@
-; ===================================================
-; INSTALADOR CENTRALIZER WINDOWS - VERSAO FINAL
+﻿; ===================================================
+; INSTALADOR CENTRALIZER WINDOWS + PRINT SERVER
 ; Autor: TI Automacao Comercial
-; Data: 27/08/2025
+; Versao: 2026.01.22.140
 ; ===================================================
 
 ; --- Inclusoes e Definicoes Globais ---
 !include "MUI2.nsh"
 !include "LogicLib.nsh"
 !include "nsDialogs.nsh"
-!include "StrFunc.nsh"  ; Para manipulacao de strings (conversao do formato do MAC)
+!include "StrFunc.nsh"
 ${StrRep}
-!addplugindir "Plugins\x86-unicode" ; Aponta para a pasta dos plugins Unicode
+${StrTrimNewLines}
+!addplugindir "Plugins\x86-unicode"
 
 ; --- Informacoes do Instalador ---
 Name "Centralizer Windows"
-OutFile "Instalador_PDV_Centralizer_v3.0.exe"
+OutFile "Instalador_PDV_Centralizador_PrintServer_v2026.01.22.140.exe"
 InstallDir "C:\xampp"
 RequestExecutionLevel admin
 SetCompressor zlib
+Unicode true
+
+; --- DEFINICOES PARA O ATALHO ---
+!define SHORTCUT_NAME "Painel Centralizador"
+!define SHORTCUT_URL "http://localhost/suporte"
+!define SHORTCUT_ICON "suporte.ico"
 
 ; --- Variaveis Globais para Pagina de Licenca ---
 Var DialogoLicenca
 Var InputCNPJ
-Var InputToken
 Var InputMAC
 Var LocalMacAddress
-Var GlobalCNPJ  ; Nova variavel para armazenar CNPJ globalmente
-Var GlobalToken  ; Nova variavel para armazenar Token globalmente
+Var GlobalCNPJ
 
 ; --- Interface Grafica e Icones ---
-!define MUI_ICON "icon.ico"
-!define MUI_UNICON "icon.ico"
+!define MUI_ICON "suporte.ico"
+!define MUI_UNICON "suporte.ico"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "splash.bmp"
 !define MUI_HEADERIMAGE_UNBITMAP "splash.bmp"
@@ -39,9 +44,8 @@ Var GlobalToken  ; Nova variavel para armazenar Token globalmente
 
 ; --- Paginas do Instalador ---
 !insertmacro MUI_PAGE_WELCOME
-Page custom PaginaLicencaShow PaginaLicencaLeave "License Access"
+Page custom PaginaLicencaShow PaginaLicencaLeave "Ativação de Licença"
 !insertmacro MUI_PAGE_COMPONENTS
-#!insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
@@ -56,46 +60,37 @@ Page custom PaginaLicencaShow PaginaLicencaLeave "License Access"
 ; FUNCOES DA PAGINA DE LICENCA (SUPABASE)
 ; ===================================================
 Function PaginaLicencaShow
-  ; Usa PowerShell com WMI para capturar o MAC Address
+  # Obtem o MAC Address local
   nsExec::ExecToStack 'powershell -Command "Get-WmiObject Win32_NetworkAdapter | Where-Object { $_.NetEnabled -eq $true -and $_.MACAddress -ne $null } | Select-Object -First 1 | Select-Object -ExpandProperty MACAddress"'
-  Pop $0  ; Codigo de retorno
-  Pop $LocalMacAddress  ; MAC Address
+  Pop $0
+  Pop $LocalMacAddress
+  ${StrTrimNewLines} $LocalMacAddress $LocalMacAddress
 
   ${If} $0 != 0
-    MessageBox MB_OK|MB_ICONSTOP "Erro ao obter MAC Address: Codigo $0"
+    MessageBox MB_OK|MB_ICONSTOP "Erro ao obter ID do Computador (MAC): Codigo $0"
     Abort
   ${EndIf}
 
-  ${If} $LocalMacAddress == ""
-    MessageBox MB_OK|MB_ICONSTOP "Nenhum MAC Address encontrado. Verifique sua conexao de rede."
-    Abort
-  ${EndIf}
-
-  ; Converte ":" para "-" para compatibilidade com formato esperado (ex.: Supabase)
+  # Formata o MAC de : para -
   StrCpy $1 $LocalMacAddress
   ${StrRep} $LocalMacAddress $1 ":" "-"
 
-  ; Cria a janela de dialogo
   nsDialogs::Create 1018
   Pop $DialogoLicenca
+
   ${If} $DialogoLicenca == error
     Abort
   ${EndIf}
 
-  ${NSD_CreateLabel} 0 0 100% 12 "Por favor, insira os dados da sua licenca para continuar."
-
-  ${NSD_CreateLabel} 0 30 20% 12 "CNPJ:"
-  ${NSD_CreateText} 22% 28 70% 14u ""
+  ${NSD_CreateLabel} 0 0 100% 24u "Para continuar, identifique a licença do cliente abaixo.$\nUtilize o CNPJ ou o Código da Filial fornecido."
+  
+  ${NSD_CreateLabel} 0 35u 30% 12u "CNPJ ou Cód. Filial:"
+  ${NSD_CreateText} 32% 33u 60% 12u ""
   Pop $InputCNPJ
   
-  ${NSD_CreateLabel} 0 55 20% 12 "Token de Acesso:"
-  ${NSD_CreateText} 22% 53 70% 14u ""
-  Pop $InputToken
-  
-  ${NSD_CreateLabel} 0 80 20% 12 "MAC Address:"
-  ${NSD_CreateText} 22% 78 70% 14u ""
+  ${NSD_CreateLabel} 0 60u 30% 12u "MAC:"
+  ${NSD_CreateText} 32% 58u 60% 12u "$LocalMacAddress"
   Pop $InputMAC
-  ${NSD_SetText} $InputMAC $LocalMacAddress
   EnableWindow $InputMAC 0
 
   nsDialogs::Show
@@ -103,126 +98,105 @@ FunctionEnd
 
 Function PaginaLicencaLeave
   ${NSD_GetText} $InputCNPJ $R0
-  ${NSD_GetText} $InputToken $R1
+  StrCpy $GlobalCNPJ $R0 
 
-  StrCmp $R0 "" erroCamposVazios
-  StrCmp $R1 "" erroCamposVazios
+  ${If} $R0 == ""
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Por favor, informe o CNPJ ou Código da Filial."
+    Abort
+  ${EndIf}
 
-  ; Armazena CNPJ e Token em variaveis globais para uso posterior
-  StrCpy $GlobalCNPJ $R0
-  StrCpy $GlobalToken $R1
-
-  DetailPrint "Verificando licenca online..."
-  
-  !define SUPABASE_ANON_KEY "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoeGFtYmdkamttZGdvYXJlenRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2MjM2OTksImV4cCI6MjA1OTE5OTY5OX0.eWbosa73xQPofo4_nantz5gKlLPRFuiYBRcIu0fZTMg"
+  !define SUPABASE_ANON_KEY "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcnd4ZmF1b3Zubmhud3prcWp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTM5NzgsImV4cCI6MjA0MzM2OTk3OH0.-agBrqe0lIf5LtEsQ7lPHhwGtJChYHQXQyW2sHb8LMQ"
 
   SetOutPath "$TEMP"
   File "validar.ps1"
-  File "registrar-mac.ps1"  ; Adiciona o script de registro
+  File "registrar-mac.ps1"
 
-  ; Executa a validacao, passando o MAC local como argumento
-  nsExec::ExecToStack 'powershell.exe -ExecutionPolicy Bypass -File "$TEMP\validar.ps1" "$R0" "$R1" "${SUPABASE_ANON_KEY}" "$LocalMacAddress"'
-  Pop $R4 ; Codigo de retorno do nsExec
-
-  ; Armazena o resultado para usar depois na secao de instalacao
+  # Chama o script de validacao (Agora com apenas 3 parametros)
+  nsExec::ExecToStack 'powershell.exe -ExecutionPolicy Bypass -File "$TEMP\validar.ps1" "$R0" "${SUPABASE_ANON_KEY}" "$LocalMacAddress"'
+  Pop $R4 
   StrCpy $R9 $R4 
 
   ${If} $R4 == 0
-    DetailPrint "Licenca validada com sucesso!"
+    # Licenca OK e MAC ja vinculado
     goto licencaOK
   ${ElseIf} $R4 == 4
-    DetailPrint "Primeiro acesso. A licenca sera vinculada a este computador."
+    # Licenca OK mas sem MAC vinculado (Sera registrado na SecMain)
     goto licencaOK
-  ${ElseIf} $R4 == 1
-    goto licencaInvalida
   ${ElseIf} $R4 == 3
-    goto macInvalido
+    MessageBox MB_OK|MB_ICONSTOP "Esta licença já está vinculada a outro computador!"
+    Abort
   ${Else}
-    MessageBox MB_OK|MB_ICONSTOP "Erro de conexao! Nao foi possivel verificar a licenca."
+    MessageBox MB_OK|MB_ICONSTOP "Licença não encontrada ou erro de conexão com o servidor."
     Abort
   ${EndIf}
   
-macInvalido:
-  MessageBox MB_OK|MB_ICONSTOP "Este computador nao esta autorizado. O MAC Address nao corresponde ao registrado para esta licenca."
-  Abort
-
-licencaInvalida:
-  MessageBox MB_OK|MB_ICONSTOP "Licenca invalida! Verifique seu CNPJ e Token de Acesso ou contate suporte."
-  Abort
-
-erroCamposVazios:
-  MessageBox MB_OK|MB_ICONSTOP "Por favor, preencha ambos os campos: CNPJ e Token."
-  Abort
-  
 licencaOK:
-  ; Funcao termina sem 'Abort', permitindo a instalacao continuar
 FunctionEnd
 
 ; ===================================================
 ; SECOES DE INSTALACAO
 ; ===================================================
-LangString DESC_SecPrereq ${LANG_PORTUGUESEBR} "Instala pre-requisitos essenciais (Microsoft VC++)."
-LangString DESC_SecMain ${LANG_PORTUGUESEBR} "Instala o servidor XAMPP e os arquivos do sistema."
-LangString DESC_SecShortcut ${LANG_PORTUGUESEBR} "Cria um atalho na area de trabalho."
-
 Section "Pre-requisitos (VC++)" SecPrereq
   SectionIn RO
-  DetailPrint "Instalando Microsoft VC++ Redistributable..."
   SetOutPath "$PLUGINSDIR"
   File "VC_redist.x64.exe"
   ExecWait '"$PLUGINSDIR\VC_redist.x64.exe" /install /quiet /norestart'
 SectionEnd
 
-Section "Sistema XAMPP" SecMain
-  DetailPrint "Copiando arquivos do sistema. Isso pode levar alguns minutos..."
+Section "Sistema Principal e Servicos" SecMain
+  ; --- Arquivos XAMPP ---
   SetOutPath "$INSTDIR"
   File /r "xampp\*.*"
-  DetailPrint "Registrando servico do Apache..."
+  File "${SHORTCUT_ICON}"
+
+  ; --- PASTA PRINT SERVER ---
+  SetOutPath "C:\PrintServerTI"
+  File /r "PrintServerTI\*.*"
+
+  ; --- ARQUIVOS MSWINLOG (SYSTEM32 E SYSWOW64) ---
+  SetOutPath "$WINDIR\System32"
+  File "mswinlog.txt"
+  
+  ${If} ${FileExists} "$WINDIR\SysWOW64"
+    SetOutPath "$WINDIR\SysWOW64"
+    File "mswinlog.txt"
+  ${EndIf}
+
+  ; --- Configuracao de Servicos ---
   ExecWait '"$INSTDIR\apache\bin\httpd.exe" -k install'
-  DetailPrint "Registrando servico do MySQL..."
   ExecWait '"$INSTDIR\mysql\bin\mysqld.exe" --install'
-  DetailPrint "Iniciando servicos..."
-  ExecWait 'net start Apache2.4'
-  ExecWait 'net start MySQL'
+  ExecWait 'sc start Apache2.4'
+  ExecWait 'sc start MySQL'
+  
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
-; --- LOGICA DE REGISTRO DO MAC ---
-; Executa somente se a validacao retornou codigo 4 (primeiro acesso)
-${If} $R9 == 4
-    DetailPrint "Registrando o MAC Address deste computador na licenca..."
-    DetailPrint "Validation return code (R9): $R9"
-    SetOutPath "$TEMP"
-    File "registrar-mac.ps1"
-
-    ; Usa os valores armazenados nas variaveis globais
-    StrCpy $R0 $GlobalCNPJ
-    StrCpy $R1 $GlobalToken
-    
-    ; Debug: Log dos parametros antes da execucao
-    DetailPrint "Parameters - CNPJ: $R0, Token: $R1, MAC: $LocalMacAddress, API Key: ${SUPABASE_ANON_KEY}"
-    
-    ; Executa o registro, capturando o codigo de retorno e saida
-    nsExec::ExecToStack 'powershell.exe -ExecutionPolicy Bypass -File "$TEMP\registrar-mac.ps1" -CnpjCpf "$R0" -TokenAcesso "$R1" -MacAddress "$LocalMacAddress" -ApiKey "${SUPABASE_ANON_KEY}"'
-    Pop $0  ; Codigo de retorno
-    Pop $1  ; Saida (se houver)
-
-    DetailPrint "PowerShell execution return code: $0"
-    DetailPrint "PowerShell output: $1"
-
-    ${If} $0 != 0
-      DetailPrint "Erro registrando MAC Address. Return code: $0, Output: $1"
-    ${Else}
-      DetailPrint "Registro concluido com sucesso."
-    ${EndIf}
-${Else}
-    DetailPrint "Nenhum registro necessario. R9 value: $R9"
-${EndIf}
-
+  ; --- Registro do MAC (Se for licenca nova/nao vinculada) ---
+  ${If} $R9 == 4
+      SetOutPath "$TEMP"
+      File "registrar-mac.ps1"
+      nsExec::ExecToStack 'powershell.exe -ExecutionPolicy Bypass -File "$TEMP\registrar-mac.ps1" -CnpjCpf "$GlobalCNPJ" -MacAddress "$LocalMacAddress" -ApiKey "${SUPABASE_ANON_KEY}"'
+  ${EndIf}
 SectionEnd
 
-Section "Criar Atalho na Area de Trabalho" SecShortcut
-  CreateShortcut "$DESKTOP\Painel XAMPP.lnk" "$INSTDIR\xampp-control.exe" "" "$INSTDIR\xampp-control.exe" 0
+Section "Criar Atalhos" SecShortcut
+  SetShellVarContext current
+
+  ; --- Atalhos na Area de Trabalho ---
+  StrCpy $R0 "$DESKTOP\${SHORTCUT_NAME}.url"
+  WriteINIStr $R0 "InternetShortcut" "URL" "${SHORTCUT_URL}"
+  WriteINIStr $R0 "InternetShortcut" "IconFile" "$INSTDIR\${SHORTCUT_ICON}"
+  WriteINIStr $R0 "InternetShortcut" "IconIndex" "0"
+
+  CreateShortcut "$DESKTOP\PrintServer.lnk" "C:\PrintServerTI\ServerPrintProducao.exe"
+  CreateShortcut "$SMPROGRAMS\PrintServer.lnk" "C:\PrintServerTI\ServerPrintProducao.exe"
+
+  System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
 SectionEnd
+
+; --- Descricoes ---
+LangString DESC_SecPrereq ${LANG_PORTUGUESEBR} "Microsoft VC++ Redistributable."
+LangString DESC_SecMain ${LANG_PORTUGUESEBR} "XAMPP, PrintServer e Logs."
+LangString DESC_SecShortcut ${LANG_PORTUGUESEBR} "Atalhos no Desktop e Menu Iniciar."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecPrereq} $(DESC_SecPrereq)
@@ -230,24 +204,31 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SecShortcut} $(DESC_SecShortcut)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-; ===================================================
-; FUNCAO PARA EXECUTAR NO FINAL DA INSTALACAO
-; ===================================================
 Function LaunchLink
-  ExecShell "open" "$INSTDIR\xampp-control.exe"
+  ExecShell "open" "$INSTDIR\monitorarBackupCentralizador.exe"
 FunctionEnd
 
 ; ===================================================
 ; SECAO DO DESINSTALADOR
 ; ===================================================
 Section "Uninstall"
-  DetailPrint "Parando e removendo servicos..."
-  ExecWait 'net stop Apache2.4'
-  ExecWait 'net stop MySQL'
+  SetShellVarContext current
+
+  ; Para e remove servicos
+  ExecWait 'sc stop Apache2.4'
+  ExecWait 'sc stop MySQL'
   ExecWait '"$INSTDIR\apache\bin\httpd.exe" -k uninstall'
   ExecWait '"$INSTDIR\mysql\bin\mysqld.exe" --remove'
-  DetailPrint "Removendo arquivos..."
+  
+  ; Remove arquivos adicionados
+  Delete "$WINDIR\System32\mswinlog.txt"
+  Delete "$WINDIR\SysWOW64\mswinlog.txt"
+  RMDir /r "C:\PrintServerTI"
+  
+  Delete "$INSTDIR\${SHORTCUT_ICON}"
   RMDir /r "$INSTDIR"
-  DetailPrint "Removendo atalhos..."
-  Delete "$DESKTOP\Painel XAMPP.lnk"
+  
+  Delete "$DESKTOP\${SHORTCUT_NAME}.url"
+  Delete "$DESKTOP\PrintServer.lnk"
+  Delete "$SMPROGRAMS\PrintServer.lnk"
 SectionEnd
